@@ -1,0 +1,301 @@
+{
+  "name": "2",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "caseCreated"
+      },
+      "type": "n8n-nodes-base.salesforceTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2c537c5d-1da6-4e38-a341-24c94add0d0c",
+      "name": "Salesforce Trigger",
+      "credentials": {
+        "salesforceOAuth2Api": {
+          "id": "yz0DGceIV1qqItZj",
+          "name": "Salesforce account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "case",
+        "operation": "get",
+        "caseId": "={{ $json.Id }}"
+      },
+      "type": "n8n-nodes-base.salesforce",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "df3a1595-3ae5-43cc-8c33-206ce30f9d1c",
+      "name": "Get a case",
+      "credentials": {
+        "salesforceOAuth2Api": {
+          "id": "yz0DGceIV1qqItZj",
+          "name": "Salesforce account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=CASE SUBJECT: {{ $json.Subject }}\nCASE DESCRIPTION:{{ $json.Description }}\nCASE PRIORITY:{{ $json.Priority }}",
+        "options": {
+          "systemMessage": "Your task is to classify the customer sentiment from the case details.\n\nRules:\n- If the customer clearly shows satisfaction, appreciation, or positive feedback, return \"Positive\".\n- If the customer clearly shows dissatisfaction, complaints, frustration, or negative feedback, return \"Negative\".\n- If the information is unclear, neutral, too short, or insufficient to decide, return \"Neutral\".\n\nOutput rules:\n- Return ONLY ONE word.\n- Valid values are:\n  Positive\n  Neutral\n  Negative\n- Do not add explanations, punctuation, or extra text.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "a30b9b50-e097-4df2-a049-7ca811553901",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        288,
+        208
+      ],
+      "id": "380d8008-463e-4c58-9638-5133023cb3ff",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "1pzrLgO35b9XjTQu",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "afthaherooth123@gmail.com",
+        "subject": "=customer is {{ $json.output }}",
+        "emailType": "text",
+        "message": "=CASE NUMBER: {{ $('Get a case').item.json.CaseNumber }}\nCASE SUBJECT:{{ $('Get a case').item.json.Subject }}\nCASE DESCRIPTION:{{ $('Get a case').item.json.Description }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1120,
+        176
+      ],
+      "id": "6aa9e6c2-f3ce-4bb8-909d-d2cc4afd8d75",
+      "name": "Send a message",
+      "webhookId": "d4f7a72c-f214-40b2-bb84-aa24575f546b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "cit9ulnyj4IdBevf",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "afthaherooth123@gmail.com",
+        "subject": "=customer is {{ $json.output }}",
+        "emailType": "text",
+        "message": "=CASE NUMBER: {{ $('Get a case').item.json.CaseNumber }}\nCASE SUBJECT:{{ $('Get a case').item.json.Subject }}\nCASE DESCRIPTION:{{ $('Get a case').item.json.Description }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "82680aff-20bf-4bc1-bfbd-e87331699776",
+      "name": "Send a message1",
+      "webhookId": "490a4ee5-13a6-4e8f-b035-20beb89f9a72",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "cit9ulnyj4IdBevf",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "afthaherooth123@gmail.com",
+        "subject": "=customer is {{ $json.output }}",
+        "emailType": "text",
+        "message": "=CASE NUMBER: {{ $('Get a case').item.json.CaseNumber }}\nCASE SUBJECT:{{ $('Get a case').item.json.Subject }}\nCASE DESCRIPTION:{{ $('Get a case').item.json.Description }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1104,
+        -160
+      ],
+      "id": "410e8e45-772e-4b39-8585-3e71b21826ba",
+      "name": "Send a message2",
+      "webhookId": "41eed223-4c5b-4f7f-bbd0-166f1cfc86e8",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "cit9ulnyj4IdBevf",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "=CASE SUBJECT: {{ $('Get a case').item.json.Subject }}\nCASE DESCRIPTION:{{ $('Get a case').item.json.Description }}",
+        "options": {
+          "categories": "Positive, Neutral, Negative"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.sentimentAnalysis",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        -16
+      ],
+      "id": "5873f671-ae06-42d3-a3da-8d4c82d71631",
+      "name": "Sentiment Analysis"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        656,
+        192
+      ],
+      "id": "70e014f4-aa7a-404b-b170-ee804c3450b8",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "1pzrLgO35b9XjTQu",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Salesforce Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get a case",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a case": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Sentiment Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sentiment Analysis": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Sentiment Analysis",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "be41225c-91b5-4b50-a293-44307a2586af",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6560ddcc171068e9dc299f6068f18c8f3a38ea0af1db0122fe0eec4069d22dcd"
+  },
+  "id": "NCnH6qGb8Lpq40dq",
+  "tags": []
+}
